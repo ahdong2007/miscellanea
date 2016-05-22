@@ -13,7 +13,6 @@ target_ssh='6.7p1'
 # wget https://www.openssl.org/source/openssl-1.0.1t.tar.gz
 # wget http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-6.7p1.tar.gz
 
-＃ update ssh
 update_open_ssh() {
 
 	# make backup first
@@ -50,7 +49,6 @@ update_open_ssh() {
 	service sshd start	
 }
 
-＃ update ssl
 update_open_ssl() {
 
 	# make a backup first
@@ -87,6 +85,10 @@ update_open_ssl() {
 	ln -s libssl.so.1.0.0 libssl.so.10
   	ln -s libcrypto.so.1.0.0 libcrypto.so.10
 
+  	# fix bug in RH5.5
+  	ln -s libssl.so.1.0.0 libssl.so.6
+	ln -s libcrypto.so.1.0.0 libcrypto.so.6
+
 	echo "/usr/local/ssl/lib" >> /etc/ld.so.conf
 	ldconfig –v
 }
@@ -99,8 +101,20 @@ echo "current OpenSSL version: $ssl_version"
 echo "target OpenSSH version: $target_ssh"
 echo "current OpenSSH version: $ssh_version"
 
+sleep 3
+
 # install packages: zlib、gcc、make、perl、pam、pam-devel
 # missing zlib-devel
+# make sure yum is available
+yum clean all >/dev/null
+yum list >/dev/null
+if [ $? -ne 0 ]; then
+	echo ""
+	echo ""
+	echo "yum is not available, pls make sure it can be used first"
+	exit 1
+fi
+
 yum install –y zlib*
 yum install -y gcc*
 yum install -y make* 
@@ -131,6 +145,19 @@ echo "target OpenSSL version: $target_ssl"
 echo "target OpenSSH version: $target_ssh"
 echo "OpenSSL/OpenSSH version after update: $ssh_ssl_version"
 echo ""
+
+# make sure we can login with root after update, bug reported in RH6.3
+echo "we need to be sure that we can login with root after update"
+ssh_cfg_file='/etc/ssh/sshd_config'
+if [ $(cat $ssh_cfg_file | grep -c '^\ *PermitRootLogin yes') -ge 1 ]; then
+	echo "we can login with root without any modifications"
+else
+	#echo "let's do some modification"
+	echo "PermitRootLogin yes" >> $ssh_cfg_file
+fi
+
+echo "let's check the configure"
+cat $ssh_cfg_file | grep '^\ *PermitRootLogin yes'
 
 # back to old path
 cd $old_pwd
