@@ -149,15 +149,17 @@ echo ""
 # make sure we can login with root after update, bug reported in RH6.3
 echo "we need to be sure that we can login with root after update"
 ssh_cfg_file='/etc/ssh/sshd_config'
-if [ $(cat $ssh_cfg_file | grep -c '^\ *PermitRootLogin yes') -ge 1 ]; then
-	echo "we can login with root without any modifications"
-else
-	#echo "let's do some modification"
+if [ $(cat $ssh_cfg_file | grep -c '^\ *PermitRootLogin yes') -lt 1 ]; then
 	echo "PermitRootLogin yes" >> $ssh_cfg_file
+fi
+
+if [ $(cat $ssh_cfg_file | grep -c '^\ *PasswordAuthentication yes') -lt 1 ]; then
+	echo "PasswordAuthentication yes" >> $ssh_cfg_file
 fi
 
 echo "let's check the configure"
 cat $ssh_cfg_file | grep '^\ *PermitRootLogin yes'
+cat $ssh_cfg_file | grep '^\ *PasswordAuthentication yes'
 
 # back to old path
 cd $old_pwd
