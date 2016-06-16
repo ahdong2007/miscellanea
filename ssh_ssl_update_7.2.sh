@@ -171,6 +171,12 @@ cat $ssh_cfg_file | grep '^\ *PasswordAuthentication yes'
 # back to old path
 cd $old_pwd
 
+echo ""
+echo ""
+echo "Pls restart the ssh manaully: service sshd restart"
+echo ""
+echo ""
+
 exit 0
 
 
