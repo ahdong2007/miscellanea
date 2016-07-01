@@ -59,17 +59,17 @@ pwd_life_time() {
 
     [ $DEBUG ] ||  { exec 1>/dev/null; exec 2>/dev/null; }
 
-    chattr -i /etc/passwd
-    chattr -i /etc/shadow
-    chattr -i /etc/group
-    chattr -i /etc/gshadow
+    # chattr -i /etc/passwd
+    # chattr -i /etc/shadow
+    # chattr -i /etc/group
+    # chattr -i /etc/gshadow
 
     chage -d 0 -m 0 -M 90 -W 7 root
 
-    chattr +i /etc/passwd
-    chattr +i /etc/shadow
-    chattr +i /etc/group
-    chattr +i /etc/gshadow
+    # chattr +i /etc/passwd
+    # chattr +i /etc/shadow
+    # chattr +i /etc/group
+    # chattr +i /etc/gshadow
 
     [ $DEBUG ] ||  { exec 1<&0; exec 2<&0; }
 }
@@ -78,10 +78,10 @@ disable_users() {
 
     [ $DEBUG ] ||  { exec 1>/dev/null; exec 2>/dev/null; }
 
-    chattr -i /etc/passwd
-    chattr -i /etc/shadow
-    chattr -i /etc/group
-    chattr -i /etc/gshadow
+    # chattr -i /etc/passwd
+    # chattr -i /etc/shadow
+    # chattr -i /etc/group
+    # chattr -i /etc/gshadow
 
     # games, ftp
     for user in $(echo -e "adm\nlp\nsync\nshutdown\nhalt\nnews\nuucp\noperator\ngopher")
@@ -94,10 +94,10 @@ disable_users() {
         fi
     done
 
-    chattr +i /etc/passwd
-    chattr +i /etc/shadow
-    chattr +i /etc/group
-    chattr +i /etc/gshadow
+    # chattr +i /etc/passwd
+    # chattr +i /etc/shadow
+    # chattr +i /etc/group
+    # chattr +i /etc/gshadow
 
     [ $DEBUG ] ||  { exec 1<&0; exec 2<&0; }
 }
