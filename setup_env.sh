@@ -8,16 +8,14 @@
 #
 #
 
-DEBUG=TRUE
-
 echo_ok() {
-  COL_SIZE=80
+  COL_SIZE=60
   STRING="$1"
   echo -e "${STRING} \\033[${COL_SIZE}G [\\033[1;32m ok \\033[0;39m]"
 }
 
 echo_failure() {
-  COL_SIZE=80
+  COL_SIZE=60
   STRING="$1"
   echo -e "${STRING} \\033[${COL_SIZE}G [\\033[1;31mFAILED\\033[0;39m]"
 }
@@ -208,7 +206,7 @@ pwd_life_time
 echo_ok "task 4: setup password life time to 90 days"
 
 disable_users
-echo_ok "task 5: disable useless system usrss"
+echo_ok "task 5: disable useless system users"
 
 check_root_user
 echo_ok "task 6: check uid=0 users"
