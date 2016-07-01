@@ -72,6 +72,8 @@ pwd_life_time() {
     chattr +i /etc/shadow
     chattr +i /etc/group
     chattr +i /etc/gshadow
+
+    [ $DEBUG ] ||  { exec 1<&0; exec 2<&0; }
 }
 
 disable_users() {
@@ -98,6 +100,8 @@ disable_users() {
     chattr +i /etc/shadow
     chattr +i /etc/group
     chattr +i /etc/gshadow
+
+    [ $DEBUG ] ||  { exec 1<&0; exec 2<&0; }
 }
 
 # check users with uid=0
@@ -154,6 +158,8 @@ disable_services() {
         service $service stop
         chkconfig $sevice off
     done
+
+    [ $DEBUG ] ||  { exec 1<&0; exec 2<&0; }
 }
 
 set_selinux() {
