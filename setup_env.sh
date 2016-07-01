@@ -8,6 +8,8 @@
 #
 #
 
+DEBUG=TRUE
+
 echo_ok() {
   COL_SIZE=80
   STRING="$1"
@@ -27,15 +29,15 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 # close std output and error
-exec 1>/dev/null
-exec 2>/dev/null
+# exec 1>/dev/null
+# exec 2>/dev/null
 
 disable_usb() {
     cfgfile='/etc/modprobe.d/usb-storage.conf'
 
     if [ -f $cfgfile ]; then
         if [ $(grep -c '^install usb-storage /bin/true' $cfgfile) -ge 1 ]; then
-            echo_ok "disable usb"
+            [ $DEBUG ] && echo_ok "disable usb"
         fi
     else
         echo "install usb-storage /bin/true" >> $cfgfile
@@ -57,6 +59,8 @@ pwd_strategy() {
 
 pwd_life_time() {
 
+    [ $DEBUG ] ||  { exec 1>/dev/null; exec 2>/dev/null; }
+
     chattr -i /etc/passwd
     chattr -i /etc/shadow
     chattr -i /etc/group
@@ -71,6 +75,8 @@ pwd_life_time() {
 }
 
 disable_users() {
+
+    [ $DEBUG ] ||  { exec 1>/dev/null; exec 2>/dev/null; }
 
     chattr -i /etc/passwd
     chattr -i /etc/shadow
@@ -108,7 +114,7 @@ check_root_user() {
     done
 
     if [  $flag -eq 0 ]; then
-        echo_ok "Only root has uid=0"
+        [ $DEBUG ] && echo_ok "Only root has uid=0"
     fi
 }
 
@@ -141,12 +147,14 @@ setup_profile() {
 
 disable_services() {
 
+    [ $DEBUG ] ||  { exec 1>/dev/null; exec 2>/dev/null; }
+
     for service in $(echo -e "cups\npostfix\npcscd\nsmarted\nalsasound\niscsitarget\nsmb\nacpid\ntelnet")
     do
         service $service stop
         chkconfig $sevice off
     done
-} > /dev/null 2>&1
+}
 
 set_selinux() {
 
@@ -157,7 +165,7 @@ set_selinux() {
 
     sed -i 's/^SELINUX=.\+/SELINUX=permissive/g' $selinux_cfg
 
-    echo_ok "setup SELinux"
+    [ $DEBUG ] && echo_ok "setup SELinux"
 }
 
 
@@ -178,8 +186,8 @@ check_no_passwd() {
 
 
 # main function
-exec 1<&0
-exec 2<&0
+# exec 1<&0
+# exec 2<&0
 
 disable_usb
 echo_ok "task 1: disable usb-storage"
