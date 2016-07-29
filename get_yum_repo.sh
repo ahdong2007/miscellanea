@@ -9,10 +9,17 @@ fi
 yum_cfg_path='/etc/yum.repos.d'
 
 # get the OS VERSION first
-if [ -f '/etc/redhat-release' ]; then
+# if [ -f '/etc/redhat-release' ]; then
 	
-	version=$(cat /etc/redhat-release | \
-		sed -e 's/\(.\+\)\([1-9]\)\.\([0-9]\+\)\(.\+\)/\2/')
+# 	version=$(cat /etc/redhat-release | \
+#		sed -e 's/\(.\+\)\([1-9]\)\.\([0-9]\+\)\(.\+\)/\2/')
+# fi
+version=$(uname -a | sed -e 's/^.\+\.el\([0-9]\).\+$/\1/g')
+
+# suport Linux 5.x, 6.x, 7.x so far
+if [ $version -ne 5 -a $version -ne 6 -a $version -ne 7 ]; then
+	echo "This version $version is not supported yet"
+	exit 1
 fi
 
 # disable RedHat subscription-manager
@@ -37,7 +44,7 @@ wget $url
 
 # run some tests
 yum clean all
-yum list
+yum list | tail -10
 
 cd -
 
