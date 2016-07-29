@@ -14,24 +14,29 @@ dir1=$1
 dir2=$2
 
 cd $dir1
-echo "dir1:            dir2:            result"
+printf "%-20s%-20s%-10s\n" "dir1" "dir2" "result"
 for file in `\ls`
 do 
-	echo -n "$file            "
+	# echo -n "$file            "
+	printf "%-20s" $file
 
 	md5sum_1=$(md5sum $file | cut -d' ' -f1)
 
 	if [ -f ${dir2}/${file} ]; then
-		echo -n "$file            "
+		# echo -n "$file            "
+		printf "%-20s" $file
 		md5sum_2=$(md5sum ${dir2}/${file} | cut -d' ' -f1)
 	else
-		echo -n "!!!!!!            "
+		# echo -n "!!!!!!            "
+		printf "%-20s" "!!!!!!"
 	fi
 
 	if [ "$md5sum_1" == "$md5sum_2" ]; then
-		echo "same"
+		# echo "same"
+		printf "%-10s\n" "same"	
 	else
-		echo "diff"
+		# echo "diff"
+		printf "%-10s\n" "diff"	
 	fi
 
 done
