@@ -11,3 +11,23 @@ function skip {
     n=$(($1 + 1))
     cut -d' ' -f$n-
 }
+
+function get_dir() {
+
+	DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+}
+
+function get_dir_with_link() {
+
+	SOURCE="${BASH_SOURCE[0]}"
+	while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  		DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  		SOURCE="$(readlink "$SOURCE")"
+  		[[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+	done
+	DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+	echo $DIR
+}
+
+
+get_dir_with_link
